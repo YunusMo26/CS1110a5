@@ -1,13 +1,19 @@
-# a3_todo.py
-# Solution by William Xiao (wmx2)
-#    w/ input from Rhea Bansal (rab378), Kevin Cook (kjc244), Lillian Lee (LJL2)
-# Mar 2020
+# a3_todo_test.py
+# ymm26, jtg242
+# Sources/people consulted: NONE
+# 04/07/2020
 
 """
 A module containing some functions to update a todo list.
+
+Skeleton authors: William Xiao (wmx2)
+    w/ input from Rhea Bansal (rab378), Kevin Cook (kjc244), Lillian Lee (LJL2)
+
+Date: Mar 1, 2020
 """
 
 # Utility printing functions
+# (This one is complete, students need not do anything)
 def sirialize(day):
     """
     Prints out the tasks scheduled in Day `day` in chronological order.
@@ -50,8 +56,6 @@ def sirialize_days(day_list):
     """
     for day in day_list:
         sirialize(day)
-        print()  # blank line for readability. OK for students to omit.
-
 
 def num_hours_busy(day):
     """
@@ -60,11 +64,18 @@ def num_hours_busy(day):
     Parameter day: the Day to check.
     Precondition: day is a Day object.
     """
-    busy_hours = 0
-    for task in day.time_slots:
-        if task is not None:  # OK for this assignment to say "if task != None"
-            busy_hours += 1
-    return busy_hours
+    # STUDENTS: Your implementation MUST make use of an explicit for-loop
+    # in a meaningful way.
+    # That is, use a for-loop to count the number of non-None timeslots;
+    # do *not* use the list `count` method or the such-like.
+    c=0
+    for i in range(24):
+        if day.time_slots[i] != None:
+            c+=1
+        #else:
+            #c+=1
+    return c
+
 
 
 def space_available(slots, start_time, end_time):
@@ -89,14 +100,12 @@ def space_available(slots, start_time, end_time):
     Precondition: end_time is an int for a valid ending time
     (0 <= end_time <= 24), and start_time < end_time.
     """
-    time_block = slots[start_time:end_time]
-    for hour in time_block:
-        if hour is not None:  # OK for this assignment: "if hour != None"
+    # STUDENTS: Your implementation MUST use a "for-each" loop meaningfully
+    # (i.e. you cannot use range() in your loop, or list methods).
+    for x in slots[start_time: end_time]:
+        if x != None:
             return False
     return True
-
-    # or, for more conciseness,
-    # return all([v is None for v in slots[start_time:end_time]])
 
 
 def add_task(day, task, start_time):
@@ -137,13 +146,15 @@ def add_task(day, task, start_time):
     Parameter start_time: The hour to start this task at.
     Precondition: start_time is an int , and 0 <= start_time < 24.
     """
-    end_time = start_time + task.length
-    if end_time > 24 or not space_available(day.time_slots, start_time, end_time):
+    # STUDENTS: Your implementation MUST make meaningful use space_available
+    # as a helper.
+    # You must make meaningful use of for-loop in your implementation that
+    # loops over a range (i.e., has a call to range()).
+    # You may not create new lists in your code.
+    if space_available(day.time_slots,start_time,start_time+task.length):
+        day.num_tasks_scheduled += 1
+        for x in range(task.length):
+            day.time_slots[start_time+x] = task
+        return True
+    else:
         return False
-
-    # has space, and can fit
-    for slot in range(start_time, end_time):
-        day.time_slots[slot] = task
-
-    day.num_tasks_scheduled += 1
-    return True
